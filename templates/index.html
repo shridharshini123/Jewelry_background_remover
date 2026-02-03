@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jewelry BG Remover</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/utif@2.0.1/UTIF.js"></script>
+
+<style>
+body {
+  background: url('data:image/svg+xml;utf8,<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="40" x2="40" y2="0" stroke="%23af9331" stroke-width="2" opacity="0.045"/><line x1="10" y1="40" x2="40" y2="10" stroke="%23af9331" stroke-width="2" opacity="0.045"/><line x1="0" y1="30" x2="30" y2="0" stroke="%23af9331" stroke-width="2"a opacity="0.045"/></svg>') repeat;
+  background-size: 40px 40px;
+  background-color: #f6f0e8;
+}
+.center-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 75vh;
+  width: 100%;
+}
+header {
+  width: 100%;
+  background: #f6f0e8;
+  padding: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo {
+  height: 80px;
+  display: block;
+}
+.animated-title {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.35rem;
+  font-weight: 600;
+  color: #000;
+  letter-spacing: 1.3px;
+  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.right-card {
+  position: relative;
+  background: #fff;
+  border-radius: 26px;
+  box-shadow:
+    0 6px 38px 0 rgba(174, 139, 49, 0.14),
+    0 1.5px 10px 0 rgba(247, 217, 100, 0.14),
+    0 0 0 7px rgba(255, 239, 170, 0.07) inset;
+  padding: 2.3rem 2.1rem 1.8rem 2.1rem;
+  min-width: 340px;
+  max-width: 450px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+.fab-btn {
+  position: absolute;
+  top: -28px;
+  right: 22px;
+  background: linear-gradient(135deg, #d1b158 20%, #ad852a 90%);
+  border: none;
+  color: #fff;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  box-shadow: 0 6px 24px 0 rgba(174,139,49,0.19);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.15rem;
+  transition: filter 0.18s, transform 0.16s, box-shadow 0.20s;
+  cursor: pointer;
+  outline: none;
+  z-index: 4;
+}
+.fab-btn:hover, .fab-btn:focus {
+  filter: brightness(1.11);
+  transform: scale(1.09) translateY(-2px);
+  box-shadow: 0 10px 33px rgba(174,139,49,0.33),0 0 0 2.5px #ffe9b4b8;
+}
+.fab-btn .fab-icon { pointer-events: none; }
+.fab-btn-tooltip {
+  visibility: hidden;
+  width: 130px;
+  background: #2b1f06ed;
+  color: #fff9e1;
+  text-align: center;
+  border-radius: 8px;
+  padding: 7px 0;
+  position: absolute;
+  z-index: 10;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.99rem;
+  opacity: 0;
+  transition: opacity 0.18s;
+  box-shadow: 0 6px 20px #a27918b7;
+  font-family: 'Poppins', sans-serif;
+}
+.fab-btn:hover .fab-btn-tooltip,
+.fab-btn:focus .fab-btn-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+.button-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  margin-top: 14px;
+}
+.download-btn {
+  background: linear-gradient(90deg, #D4AF37 0%, #ab832d 100%);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  padding: 0.48rem 1.25rem;
+  font-size: 1rem;
+  box-shadow: 0 1.5px 7px rgba(212, 175, 55, 0.11);
+  cursor: pointer;
+  transition: filter 0.18s, background 0.22s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+.download-btn:hover {
+  filter: brightness(1.13);
+}
+.placeholder {
+  color: #aaa;
+  font-size: 0.97rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+.processed-image {
+  max-width: 330px;
+  max-height: 340px;
+  margin-bottom: 22px;
+  border-radius: 9px;
+  box-shadow: 0 4px 18px rgba(171,131,45,0.09);
+  display: block;
+  background-color: #fff;
+  background-image: 
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+.preview-active img.processed-image {
+  background: none !important;
+}
+
+.preview-bg-box {
+  position: relative;
+  width: 330px;
+  height: 340px;
+  border-radius: 9px;
+  box-shadow: 0 4px 18px rgba(171,131,45,0.09);
+  overflow: hidden;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-bottom: 10px;
+}
+.preview-bg-box img.processed-image {
+  position: relative; 
+  z-index: 2; 
+  max-width: 100%; 
+  max-height: 100%; 
+  display: block;
+}
+.preview-bg-box.bg-photo-preview { 
+  z-index: 1; 
+}
+#upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+#upload-button {
+  background: linear-gradient(90deg, #D4AF37 0%, #ab832d 100%);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 1.33rem;
+}
+#upload-button:hover {
+  background: linear-gradient(90deg, #ab832d 13%, #D4AF37 95%);
+  transform: translateY(-1.5px);
+}
+.sidebar-bg-panel { 
+  position: fixed;
+  top: 0; 
+  right: 0; 
+  bottom: 0; 
+  height: 100vh; 
+  width: 330px; 
+  background: #fff; 
+  border-radius: 0 0 0 38px; 
+  box-shadow: -5px 0 22px rgba(174,139,49,0.06); 
+  display: flex; 
+  flex-direction: column; 
+  align-items: flex-start; 
+  justify-content: flex-start; 
+  padding: 2.3rem 1.2rem 1.1rem 1.5rem; 
+  z-index: 99; 
+  transition: right 0.3s, box-shadow 0.3s; 
+  border-right: 0; 
+  border: none;
+}
+.sidebar-bg-panel.hide { 
+  right: -360px; 
+  pointer-events: none;
+}
+.sidebar-bg-panel.show { 
+  right: 0; 
+  pointer-events: all;
+}
+.bg-section-title { 
+  font-weight: 600; 
+  font-size: 1.08rem; 
+  font-family: 'Poppins', sans-serif; 
+  margin-bottom: 8px; 
+  color: #563e07;
+}
+.color-bg-list, .photo-bg-list-grid {
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+  margin-bottom: 15px; 
+  width: 100%; 
+  max-height: 104px; 
+  overflow-y: auto;
+}
+.color-bg-option, .photo-bg-thumb { 
+  border-radius: 8px; 
+  border: 2px solid #d4af37; 
+  box-shadow: 0 0 5px rgba(173,154,66,0.5); 
+  cursor: pointer; 
+  margin-bottom: 5px; 
+  width: 40px; 
+  height: 40px; 
+  object-fit: cover; 
+  display: inline-block;
+}
+.photo-bg-thumb { 
+  width: 54px; 
+  height: 54px; 
+  margin-right: 6px;
+}
+.apply-bg-btn { 
+  background: linear-gradient(90deg, #D4AF37 0%, #ab832d 100%); 
+  color: #fff;
+  font-family: 'Poppins', sans-serif; 
+  font-weight: 500; 
+  border: none; 
+  border-radius: 12px; 
+  padding: 0.44rem 1.13rem; 
+  font-size: 1rem; 
+  box-shadow: 0 1.5px 7px rgba(212,175,55,0.12); 
+  cursor: pointer; 
+  width: 80%; 
+  max-width: 210px; 
+  display: block; 
+  margin: 20px auto 0 auto; 
+  text-align: center; 
+  transition: filter 0.18s, background 0.22s;
+}
+.apply-bg-btn:hover { 
+  filter: brightness(1.13);
+}
+@media (max-width:650px) {
+  .sidebar-bg-panel { 
+    width: 98vw; 
+    min-width:240px; 
+    border-radius:0; 
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <img src="{{url_for('static',filename='logo (2).png')}}" alt="Logo" class="logo"/>
+</header>
+
+<div class="center-wrapper">
+  <div class="animated-title">Jewelry Background Remover</div>
+  <div class="right-card">
+    <button type="button" id="change-bg-btn" class="fab-btn" title="Change Background">
+      <span class="fab-icon">&#x1F3A8;</span>
+      <span class="fab-btn-tooltip">Change Background</span>
+    </button>
+    <form id="upload-form" method="post" enctype="multipart/form-data" action="/">
+        <input type="file" id="imageInput" name="image" accept="image/*,.tif,.tiff,.bmp,.avif,.heif,.heic,.raf,.raw" required style="display:none;" onchange="previewAndSubmit()">
+        <button type="button" id="upload-button" 
+            {% if output_image %} style="display:none;" {% endif %}>
+            Select Image
+        </button>
+        <input type="hidden" name="background" id="background-input" value="none" />
+        <input type="hidden" name="bg_color" id="bg-color-input" value="" />
+        <input type="hidden" name="original_output" id="original_output" value="{{ output_image }}">
+        <input type="hidden" id="original-image-path" value="{{ orig_filename }}">
+
+
+    </form>
+    <div id="preview-container" style="margin-bottom: 12px;"></div>
+    <div id="loading" style="display:none; font-family:'Poppins',sans-serif; color:#555; margin-bottom:12px;">Processing image...</div>
+    <div id="result">
+        {% if error %}
+            <div class="placeholder" style="color:red;">{{ error }}</div>
+        {% elif output_image %}
+            <div id="preview-bg-box" class="preview-bg-box">
+              <img id="previewMainImg" src="{{ url_for('serve_output', filename=output_image) }}" class="processed-image">
+            </div>
+            <div class="button-row">
+                <a href="{{ url_for('download_file', filename=output_image) }}" class="download-btn" download>Download</a>
+                <button id="clear-btn" class="download-btn" type="button">Clear</button>
+            </div>
+            <div id="sidebarBgPanel" class="sidebar-bg-panel hide">
+          <div>
+            <div class="bg-section-title">Colors</div>
+            <div class="color-bg-list">
+              <div class="color-bg-option" style="background: #f0e68c" onclick="markSelected.call(this, 'color', 'f0e68c')"></div>
+              <div class="color-bg-option" style="background: #ffcccc" onclick="markSelected.call(this, 'color', 'ffcccc')"></div>
+
+              <div class="color-bg-option" style="background: #b9e4c9" onclick="markSelected.call(this, 'color', 'b9e4c9')"></div>
+              <div class="color-bg-option" style="background: #a3cbff" onclick="markSelected.call(this, 'color', 'a3cbff')"></div>
+              <div class="color-bg-option" style="background: #ffd700" onclick="markSelected.call(this, 'color', 'ffd700')"></div>
+              <div class="color-bg-option" style="background: #fff" onclick="markSelected.call(this, 'color', 'ffffff')"></div>
+              <div class="color-bg-option" style="background: #ff82ff" onclick="markSelected.call(this, 'color', 'ff82ff')"></div>
+              <div class="color-bg-option" style="background: #ff98ff" onclick="markSelected.call(this, 'color', 'ff98ff')"></div>
+              <div class="color-bg-option" style="background: #afe1af" onclick="markSelected.call(this, 'color', 'afe1af')"></div>
+              <div class="color-bg-option" style="background: #98ffa7" onclick="markSelected.call(this, 'color', '98ffa7')"></div>
+              <div class="color-bg-option" style="background: #b39fff" onclick="markSelected.call(this, 'color', 'b39fff')"></div>
+              <div class="color-bg-option" style="background: #efd6ac" onclick="markSelected.call(this, 'color', 'efd6ac')"></div>
+              <div class="color-bg-option" style="background: #d4962a" onclick="markSelected.call(this, 'color', 'efd6ac')"></div>
+            </div>
+            <div class="bg-section-title">Photos</div>
+            <div class="photo-bg-list-grid">
+              {% for bg in backgrounds %}
+                <img src="{{ url_for('static', filename='backgrounds/' + bg) }}" alt="{{ bg }}" class="photo-bg-thumb" onclick="markSelected.call(this, 'photo', '{{ bg }}')">
+              {% endfor %}
+            </div>
+            <button id="applyBtn" class="apply-bg-btn" type="button">Apply</button>
+          </div>
+        </div>
+        {% elif preview_image %}
+            <img src="{{ url_for('serve_preview', filename=preview_image) }}" class="processed-image" style="margin-bottom:15px;">
+            <div class="placeholder">Processing full image...</div>
+        {% else %}
+            <div class="placeholder" id="placeholder">Upload a jewelry image</div>
+        {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedType = null;
+let selectedValue = '';
+document.getElementById('upload-button').onclick = () => {
+    document.getElementById('imageInput').click();
+};
+
+function previewAndSubmit() {
+    const input = document.getElementById('imageInput');
+    const previewContainer = document.getElementById('preview-container');
+    const uploadButton = document.getElementById('upload-button');
+    const loading = document.getElementById('loading');
+    const placeholder = document.getElementById('placeholder');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const fileType = file.type;
+        const fileName = file.name.toLowerCase();
+
+        if (["image/png", "image/jpeg", "image/webp", "image/bmp", "image/avif", "image/heif", "image/heic"].includes(fileType)) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                uploadButton.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'none';
+                previewContainer.innerHTML = `<img src="${e.target.result}" class="processed-image">`;
+                loading.style.display = 'block';
+                document.getElementById('upload-form').submit();
+            };
+            reader.readAsDataURL(file);
+
+        } else if (fileName.endsWith(".tiff") || fileName.endsWith(".tif")) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const worker = new Worker('static/tiffworker.js');
+                worker.onmessage = function(event) {
+                    if (event.data.error) {
+                        alert("Failed to decode TIFF image: " + event.data.error);
+                        uploadButton.style.display = '';
+                        loading.style.display = 'none';
+                        previewContainer.innerHTML = '';
+                        if (placeholder) placeholder.style.display = '';
+                        return;
+                    }
+                    const {rgba, width, height} = event.data;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    const clampedArray = new Uint8ClampedArray(rgba);
+                    const imageData = new ImageData(clampedArray, width, height);
+                    ctx.putImageData(imageData, 0, 0);
+                    previewContainer.innerHTML = `<img src="${canvas.toDataURL('image/png')}" class="processed-image">`;
+                    uploadButton.style.display = 'none';
+                    if (placeholder) placeholder.style.display = 'none';
+                    loading.style.display = 'block';
+                    document.getElementById('upload-form').submit();
+                    worker.terminate();
+                };
+                worker.postMessage(e.target.result, [e.target.result]);
+            };
+            reader.readAsArrayBuffer(file);
+
+        } else if (fileName.endsWith(".raf") || fileName.endsWith(".raw")) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const arrayBuffer = e.target.result;
+                    const bytes = new Uint8Array(arrayBuffer);
+                    const jpegStart = bytes.indexOf(0xFF);
+                    if (jpegStart !== -1) {
+                        const blob = new Blob([bytes.slice(jpegStart)], { type: "image/jpeg" });
+                        const imgURL = URL.createObjectURL(blob);
+                        previewContainer.innerHTML = `<img src="${imgURL}" class="processed-image">`;
+                    } else {
+                        previewContainer.innerHTML = `<div class="placeholder" style="color:red;">Preview not supported for this RAW type.</div>`;
+                    }
+                    uploadButton.style.display = 'none';
+                    if (placeholder) placeholder.style.display = 'none';
+                    loading.style.display = 'block';
+                    document.getElementById('upload-form').submit();
+                } catch (error) {
+                    console.error("RAW preview failed:", error);
+                    previewContainer.innerHTML = `<div class="placeholder" style="color:red;">Failed to load RAW preview</div>`;
+                    uploadButton.style.display = '';
+                    loading.style.display = 'none';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+
+        } else {
+            uploadButton.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'none';
+            previewContainer.innerHTML = '';
+            loading.style.display = 'block';
+            document.getElementById('upload-form').submit();
+        }
+    }
+}
+async function applyPreviewToImage(type, value) {
+
+    const img = document.getElementById("previewMainImg");
+    const originalPath = document.getElementById("original-image-path").value;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    let cutout = new Image();
+    cutout.src = `/output/${originalPath}`;
+    await cutout.decode();
+
+    canvas.width = cutout.width;
+    canvas.height = cutout.height;
+
+    // Draw background
+    if (type === "color") {
+        ctx.fillStyle = "#" + value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (type === "photo") {
+        let bg = new Image();
+        bg.src = `/static/backgrounds/${value}`;
+        await bg.decode();
+
+        ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+    }
+
+    // Draw transparent jewelry on top
+    ctx.drawImage(cutout, 0, 0);
+
+    // Convert CANVAS → preview image
+    img.src = canvas.toDataURL("image/png");
+}
+
+
+window.onload = function() {
+    const clearBtn = document.getElementById('clear-btn');
+    const changeBgBtn = document.getElementById('change-bg-btn');
+    const sidebarBgPanel = document.getElementById('sidebarBgPanel');
+    const applyBtn = document.getElementById('applyBtn');
+    const actionRow = document.getElementById('actionRow');
+    if (clearBtn) {
+        clearBtn.onclick = function () {
+            window.location.href = '/';
+        };
+    }
+    if (changeBgBtn && sidebarBgPanel && applyBtn) {
+    changeBgBtn.onclick = function () {
+
+        const sidebarBgPanel = document.getElementById('sidebarBgPanel');
+        const box = document.getElementById('preview-bg-box');
+        const actionRow = document.querySelector(".button-row");
+
+        // Show sidebar
+        sidebarBgPanel?.classList.remove('hide');
+        sidebarBgPanel?.classList.add('show');
+
+        // Hide button
+        changeBgBtn.style.display = "none";
+
+        // Hide download + clear buttons if they exist
+        if(actionRow) actionRow.style.display = "none";
+
+        // Reset selection state
+        selectedType = null;
+        selectedValue = '';
+
+        // Clear previous selected highlight
+        document.querySelectorAll('.color-bg-option, .photo-bg-thumb')
+            .forEach(el => el.style.outline = 'none');
+
+        // Remove previous applied background ONLY if edit mode preview box exists
+        if (box) {
+            resetPreviewBg();
+        }
+    };
+
+    applyBtn.onclick = function () {
+
+      if (!selectedType || !selectedValue) {
+          alert("Please select a background first.");
+          return;
+      }
+
+      sidebarBgPanel.classList.add('hide');
+      changeBgBtn.style.display = "block";
+      const actionRow = document.querySelector(".button-row");
+      if (actionRow) actionRow.style.display = "flex";
+
+      // Fix filename before sending to backend
+      let src = document.getElementById("previewMainImg").src;
+      let originalFile = document.getElementById("original-image-path").value;
+
+      // If preview image is base64, ignore it — use original filename
+      if (src.startsWith("data:image")) {
+          document.getElementById("original_output").value = originalFile;
+      } else {
+          document.getElementById("original_output").value = decodeURIComponent(src.split('/').pop());
+      }
+
+
+      if (selectedType === 'color') {
+          document.getElementById('background-input').value = "color";
+          document.getElementById('bg-color-input').value = selectedValue;
+      } else {
+          document.getElementById('background-input').value = selectedValue;
+          document.getElementById('bg-color-input').value = "";
+      }
+
+      document.getElementById('upload-form').submit();
+  };
+
+  }
+  if (sidebarBgPanel) {
+    sidebarBgPanel.classList.remove('show');
+    sidebarBgPanel.classList.add('hide');
+  }
+  resetPreviewBg();
+};
+function resetPreviewBg() {
+    const box = document.getElementById('preview-bg-box');
+    if (!box) return;
+
+    box.style.background = "none";
+    box.classList.remove('bg-photo-preview', 'preview-active');
+}
+
+function showPreviewBg(type, value) {
+  const box = document.getElementById('preview-bg-box');
+  if (!box) return;
+
+  // Always clear old preview first
+  resetPreviewBg();
+
+  box.classList.add('preview-active');
+
+  if (type === 'color') {
+    box.style.background = "#" + value;
+  } else if (type === 'photo') {
+    box.style.background = `url('/static/backgrounds/${value}') center/cover no-repeat`;
+  }
+}
+
+function markSelected(type, value) {
+
+    selectedType = type;
+    selectedValue = value;
+
+    document.querySelectorAll('.color-bg-option, .photo-bg-thumb')
+        .forEach(el => el.style.outline = 'none');
+
+    if (event && event.currentTarget) {
+        event.currentTarget.style.outline = '2px solid #b39528';
+    }
+
+    // Live canvas based preview
+    applyPreviewToImage(type, value);
+}
+
+function scrollPhotos() {
+  document.querySelector('.photo-bg-list-grid').scrollBy({ left: 100, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
